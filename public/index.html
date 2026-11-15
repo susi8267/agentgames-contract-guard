@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contract Guard — BSC contract risk triage</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 44rem; padding: 0 1rem; line-height: 1.5; }
+  code { background: #f0f0f0; padding: 0.1em 0.3em; border-radius: 4px; }
+  input { width: 100%; padding: 0.5rem; font-family: monospace; box-sizing: border-box; }
+  button { margin-top: 0.5rem; padding: 0.5rem 1rem; cursor: pointer; }
+  pre { background: #111; color: #eee; padding: 1rem; overflow-x: auto; border-radius: 6px; white-space: pre-wrap; word-break: break-word; }
+</style>
+</head>
+<body>
+<h1>Contract Guard</h1>
+<p>Read-only BSC contract risk triage. Paste a BSC contract address before a
+mint/buy and get an explained verdict built only from public read-only checks:
+bytecode presence (<code>eth_getCode</code>), Sourcify source verification,
+and <code>owner()</code> / <code>paused()</code> probes. No keys, no signing,
+no writes. This is a triage heuristic, not an audit.</p>
+<p>Endpoints: <code>GET /health</code> · <code>POST /check {"address":"0x…"}</code></p>
+<form id="f">
+  <input id="addr" placeholder="0x… BSC address" spellcheck="false">
+  <button type="submit">Check</button>
+</form>
+<pre id="out">Result will appear here.</pre>
+<script>
+document.getElementById('f').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const out = document.getElementById('out');
+  out.textContent = 'Checking…';
+  try {
+    const res = await fetch('/check', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ address: document.getElementById('addr').value.trim() }),
+    });
+    out.textContent = JSON.stringify(await res.json(), null, 2);
+  } catch (err) {
+    out.textContent = 'Request failed: ' + err.message;
+  }
+});
+</script>
+</body>
+</html>
