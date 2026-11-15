@@ -1,0 +1,1 @@
+{"name":"contract-guard","version":"0.1.0","description":"Read-only BSC contract risk triage agent (zkVerify Agent Games — Wildcard track)","license":"MIT","type":"module","main":"index.mjs","scripts":{"start":"NODE_USE_ENV_PROXY=1 node index.mjs"}}
